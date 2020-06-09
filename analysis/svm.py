@@ -2,6 +2,11 @@
 # This script sets out to build a 
 # Support Vector Machine algorithm
 # and visualise results
+#
+# NOTE: This script requires the .R
+# scripts to have been run first as
+# most of the preprocessing was done
+# there
 #-------------------------------------
 
 #-------------------------------------
@@ -16,6 +21,8 @@ from scipy import stats
 from sklearn.svm import SVC
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.metrics import classification_report, confusion_matrix
+from mlxtend.plotting import plot_decision_regions
 
 # Use seaborn plotting defaults
 
@@ -26,39 +33,6 @@ import seaborn as sns; sns.set()
 # Import data
 
 d = pd.read_excel("/Users/trenthenderson/Documents/R/abs-postcode-svm/data/two_level_factored.xlsx")
-
-#%%
-
-# Reusable SVM plotting function
-# From https://jakevdp.github.io/PythonDataScienceHandbook/05.07-support-vector-machines.html
-
-def plot_svc_decision_function(model, ax=None, plot_support=True):
-    """Plot the decision function for a 2D SVC"""
-    if ax is None:
-        ax = plt.gca()
-    xlim = ax.get_xlim()
-    ylim = ax.get_ylim()
-    
-    # create grid to evaluate model
-    x = np.linspace(xlim[0], xlim[1], 30)
-    y = np.linspace(ylim[0], ylim[1], 30)
-    Y, X = np.meshgrid(y, x)
-    xy = np.vstack([X.ravel(), Y.ravel()]).T
-    P = model.decision_function(xy).reshape(X.shape)
-    
-    # plot decision boundary and margins
-    ax.contour(X, Y, P, colors='k',
-               levels=[-1, 0, 1], alpha=0.5,
-               linestyles=['--', '-', '--'])
-    
-    # plot support vectors
-    if plot_support:
-        ax.scatter(model.support_vectors_[:, 0],
-                   model.support_vectors_[:, 1],
-                   s=300, linewidth=1, facecolors='none');
-    ax.set_xlim(xlim)
-    ax.set_ylim(ylim)
-
 
 #%%
 # Split into X and y
@@ -84,11 +58,27 @@ xTrain, xTest, yTrain, yTest = train_test_split(X, y, test_size = 0.2, random_st
 model = SVC(kernel = 'rbf', C = 1E6)
 model.fit(xTrain, yTrain)
 
-#%%
 
+#%%
 # Visualise model
 
-plt.scatter(xTrain[:, 0], xTrain[:, 1], c = yTrain, cmap = 'coolwarm')
-plot_svc_decision_function(model)
-plt.scatter(model.support_vectors_[:, 0], model.support_vectors_[:, 1],
-            lw = 1, facecolors = 'none');
+plot_decision_regions(X = xTrain, 
+                      y = yTrain.values,
+                      clf = model, 
+                      legend = 2)
+
+# Update plot object with X/Y axis labels and Figure Title
+
+plt.xlabel("Usual resident population", size = 12)
+plt.ylabel("Proportion dwellings with internet access", size = 12)
+plt.title("Population and internet access predict regionality", size = 14)
+plt.savefig('/Users/trenthenderson/Documents/R/abs-postcode-svm/output/svm_plt.png', dpi = 1000)
+plt.show()
+
+#%%
+
+# Evaluate model accuracy
+
+y_pred = model.predict(xTest)
+print(confusion_matrix(yTest, y_pred))
+print(classification_report(yTest, y_pred))
