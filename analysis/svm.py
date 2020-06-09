@@ -59,22 +59,23 @@ def plot_svc_decision_function(model, ax=None, plot_support=True):
     ax.set_xlim(xlim)
     ax.set_ylim(ylim)
 
+
+#%%
+# Split into X and y
+
+X = d.drop('grouped_ra', axis=1)
+y = d['grouped_ra']
+
 #%%
 
 # Scale data
 
 scaler = MinMaxScaler(feature_range=(0, 1))
-d1 = scaler.fit_transform(d)
+X = scaler.fit_transform(X)
 
-# Split into train and test data
+# Split into train and test
 
-x = d1
-x = np.delete(x, 2, 1)
-y = d1
-y = np.delete(y, 0, 1)
-y = np.delete(y, 0, 1)
-
-xTrain, xTest, yTrain, yTest = train_test_split(x, y, test_size = 0.2, random_state = 0)
+xTrain, xTest, yTrain, yTest = train_test_split(X, y, test_size = 0.2, random_state = 0)
 
 #%%
 
@@ -87,4 +88,7 @@ model.fit(xTrain, yTrain)
 
 # Visualise model
 
-
+plt.scatter(xTrain[:, 0], xTrain[:, 1], c = yTrain)
+plot_svc_decision_function(model)
+plt.scatter(model.support_vectors_[:, 0], model.support_vectors_[:, 1],
+            lw = 1, facecolors = 'none');
