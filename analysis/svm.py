@@ -88,7 +88,7 @@ model.fit(xTrain, yTrain)
 
 # Visualise model
 
-plt.scatter(xTrain[:, 0], xTrain[:, 1], c = yTrain)
+plt.scatter(xTrain[:, 0], xTrain[:, 1], c = yTrain, cmap = 'coolwarm')
 plot_svc_decision_function(model)
 plt.scatter(model.support_vectors_[:, 0], model.support_vectors_[:, 1],
             lw = 1, facecolors = 'none');
