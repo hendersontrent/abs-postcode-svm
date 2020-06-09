@@ -14,18 +14,9 @@
 
 d1 <- read_excel("data/three_level.xlsx")
 d2 <- read_excel("data/two_level.xlsx")
+d3 <- read_excel("data/two_level_factored.xlsx")
 
 #------------------MODELLING---------------------
-
-# Recode to [0,1,2] factors
-
-d3 <- d2 %>%
-  mutate(grouped_ra = case_when(
-         grouped_ra == "Major City postcodes" ~ 1,
-         TRUE                                 ~ 0)) %>%
-  mutate(grouped_ra = as.factor(grouped_ra)) %>%
-  dplyr::select(c(usual_resident_population, prop_dwellings_internet_accessed, grouped_ra)) %>%
-  mutate(usual_resident_population = log10(usual_resident_population))
 
 # Split into test and train data
 
