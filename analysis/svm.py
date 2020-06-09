@@ -71,7 +71,7 @@ plot_decision_regions(X = xTrain,
 
 plt.xlabel("Usual resident population", size = 12)
 plt.ylabel("Proportion dwellings with internet access", size = 12)
-plt.title("Population and internet access predict regionality", size = 14)
+plt.title("Population and internet access classify regionality", size = 14)
 plt.savefig('/Users/trenthenderson/Documents/R/abs-postcode-svm/output/svm_plt.png', dpi = 1000)
 plt.show()
 
