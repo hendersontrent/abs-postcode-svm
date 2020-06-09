@@ -27,6 +27,14 @@ two_level <- d %>%
     TRUE                                        ~ "Not Major City")) %>%
   mutate(prop_dwellings_internet_accessed = prop_dwellings_internet_accessed * 100)
 
+two_level_factored <- two_level %>%
+  mutate(grouped_ra = case_when(
+    grouped_ra == "Major City postcodes" ~ 1,
+    TRUE                                 ~ 0)) %>%
+  mutate(grouped_ra = as.factor(grouped_ra)) %>%
+  dplyr::select(c(usual_resident_population, prop_dwellings_internet_accessed, grouped_ra)) %>%
+  mutate(usual_resident_population = log10(usual_resident_population))
+
 #-------------
 # Export data
 #-------------
@@ -37,3 +45,4 @@ if(!dir.exists('data')) dir.create('data')
 
 write_xlsx(three_level, "data/three_level.xlsx")
 write_xlsx(two_level, "data/two_level.xlsx")
+write_xlsx(two_level_factored, "data/two_level_factored.xlsx")
